@@ -7,10 +7,10 @@ local Api = {}
 
 local function tmpMsgFileName(params)
   local temp_file = os.tmpname()
-    local f = io.open(temp_file, "w+")
+  local f = io.open(temp_file, "w+")
   if f == nil then
     vim.notify("Cannot open temporary message file: " .. temp_file, vim.log.levels.ERROR)
-    return
+    return nil
   end
   f:write(vim.fn.json_encode(params))
   f:close()
@@ -39,6 +39,9 @@ function Api.chat_completions(custom_params, cb, should_stop)
     cb = vim.schedule_wrap(cb)
 
     local TMP_MSG_FILENAME = tmpMsgFileName(params)
+    if TMP_MSG_FILENAME == nil then
+      return
+    end
 
     local extra_curl_params = Config.options.extra_curl_params
     local args = {
@@ -103,6 +106,7 @@ function Api.chat_completions(custom_params, cb, should_stop)
       end,
       should_stop,
       function()
+        os.remove(TMP_MSG_FILENAME)
         cb(raw_chunks, "END")
       end
     )
@@ -125,6 +129,9 @@ end
 
 function Api.make_call(url, params, cb)
   local TMP_MSG_FILENAME = tmpMsgFileName(params)
+  if TMP_MSG_FILENAME == nil then
+      return
+  end
   local args = {
     url,
     "-H",
