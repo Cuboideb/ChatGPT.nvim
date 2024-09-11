@@ -23,16 +23,6 @@ function Api.completions(custom_params, cb)
   Api.make_call(Api.COMPLETIONS_URL, params, cb)
 end
 
-local function windows_to_posix(path)
-  local posix_path = path:gsub("\\", "/")
-
-  posix_path = posix_path:gsub("^(%a):", function(drive)
-    return "/" .. drive:lower()
-  end)
-
-  return posix_path
-end
-
 function Api.chat_completions(custom_params, cb, should_stop)
   local openai_params = Utils.collapsed_openai_params(Config.options.openai_params)
   local params = vim.tbl_extend("keep", custom_params, openai_params)
@@ -64,7 +54,7 @@ function Api.chat_completions(custom_params, cb, should_stop)
       "-H",
       Api.AUTHORIZATION_HEADER,
       "-d",
-      "@" .. windows_to_posix(TMP_MSG_FILENAME),
+      "@" .. TMP_MSG_FILENAME,
     }
 
     if extra_curl_params ~= nil then
@@ -151,7 +141,7 @@ function Api.make_call(url, params, cb)
     "-H",
     Api.AUTHORIZATION_HEADER,
     "-d",
-    "@" .. windows_to_posix(TMP_MSG_FILENAME),
+    "@" .. TMP_MSG_FILENAME,
   }
 
   local extra_curl_params = Config.options.extra_curl_params
