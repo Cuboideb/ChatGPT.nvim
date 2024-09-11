@@ -76,7 +76,7 @@ function Api.chat_completions(custom_params, cb, should_stop)
     --print(table.concat(args, " "))
 
     Api.exec(
-      "runcurl.bat",
+      "curl",
       args,
       function(chunk)
         local ok, json = pcall(vim.json.decode, chunk)
