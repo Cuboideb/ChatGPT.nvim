@@ -26,9 +26,9 @@ end
 local function windows_to_posix(path)
   local posix_path = path:gsub("\\", "/")
 
-  posix_path = posix_path:gsub("^(%a):", function(drive)
-    return "/" .. drive:lower()
-  end)
+  -- posix_path = posix_path:gsub("^(%a):", function(drive)
+  --   return "/" .. drive:lower()
+  -- end)
 
   return posix_path
 end
