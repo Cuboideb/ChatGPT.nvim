@@ -26,9 +26,9 @@ end
 local function windows_to_posix(path)
   local posix_path = path:gsub("\\", "/")
 
-  -- posix_path = posix_path:gsub("^(%a):", function(drive)
-  --   return "/" .. drive:lower()
-  -- end)
+  posix_path = posix_path:gsub("^(%a):", function(drive)
+    return "/" .. drive:lower()
+  end)
 
   return posix_path
 end
@@ -76,7 +76,7 @@ function Api.chat_completions(custom_params, cb, should_stop)
     --print(table.concat(args, " "))
 
     Api.exec(
-      "curl",
+      "runcurl.bat",
       args,
       function(chunk)
         local ok, json = pcall(vim.json.decode, chunk)
